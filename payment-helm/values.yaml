@@ -1,0 +1,49 @@
+replicaCount: 3
+
+
+
+image:
+
+  repository: 985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service
+
+  tag: v2
+
+  pullPolicy: IfNotPresent
+
+
+
+service:
+
+  type: ClusterIP
+
+  port: 80
+
+  targetPort: 8080
+
+
+
+containerPort: 8080
+
+
+
+resources:
+
+  requests:
+
+    cpu: "100m"
+
+    memory: "128Mi"
+
+  limits:
+
+    cpu: "500m"
+
+    memory: "512Mi"
+
+
+
+config:
+
+  APP_ENV: "dev"
+
+  APP_PORT: "8080"
