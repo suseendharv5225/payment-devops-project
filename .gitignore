@@ -1,0 +1,15 @@
+# Terraform generated files
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+
+# Sensitive files
+*.tfvars
+*.tfvars.json
+.env
+
+# OS/editor files
+.DS_Store
+.vscode/
