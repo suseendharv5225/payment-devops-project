@@ -23,6 +23,5 @@ pipeline{
                 sh 'terraform state list'
             }
         }
-        }
     }
 }
