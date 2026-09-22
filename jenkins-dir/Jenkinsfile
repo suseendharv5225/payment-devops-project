@@ -19,7 +19,6 @@ pipeline{
                 sh 'terraform fmt --check'
                 sh 'terraform init'
                 sh 'terraform validate'
-                sh 'terraform state list'
             }
         }
     }
