@@ -1,13 +1,27 @@
 pipeline{
     agent any
     stages{
-        stage('check-2'){
+        stage('file validation'){
             steps{
-                sh 'echo "hello"'
-                sh 'ls'
-                sh 'cd ~'
                 sh 'pwd'
+                sh 'ls'
+                sh 'find -name "*.tf"'
+                sh 
             }
+        }
+        stage('terraform version'){
+            steps{
+                sh 'terraform version'
+            }
+        stage('fmt check'){
+            steps{
+                sh 'cd terraform/aws-network'
+                sh 'terraform fmt --check'
+                sh 'terraform init'
+                sh 'terraform validate'
+                sh 'terraform state list'
+            }
+        }
         }
     }
 }
