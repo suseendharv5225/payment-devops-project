@@ -5,7 +5,7 @@ pipeline{
             steps{
                 sh 'echo "hello"'
                 sh 'pwd'
-                sh 'cd'
+                sh 'cd ~'
                 sh 'pwd'
             }
         }
