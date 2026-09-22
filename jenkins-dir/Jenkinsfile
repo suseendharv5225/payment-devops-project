@@ -1,7 +1,10 @@
 pipeline{
-    stages{
-        stage(test){
-            sh 'pwd'
+    agent any{
+        stages{
+            stage('testing'){
+                sh 'pwd'
+                sh 'ls'
+            }
         }
     }
 }
