@@ -1,7 +1,7 @@
 pipeline{
     agent none
         stages{
-            stage('testing'){
+            steps('testing'){
                 sh 'pwd'
                 sh 'ls'
             }
