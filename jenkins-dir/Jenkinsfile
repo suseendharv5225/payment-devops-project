@@ -5,8 +5,7 @@ pipeline{
             steps{
                 sh 'pwd'
                 sh 'ls'
-                sh 'find -name "*.tf"'
-                sh 
+                sh 'find -name "*.tf"' 
             }
         }
         stage('terraform version'){
