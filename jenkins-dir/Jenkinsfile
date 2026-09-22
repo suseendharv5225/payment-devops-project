@@ -13,6 +13,7 @@ pipeline{
             steps{
                 sh 'terraform version'
             }
+        }
         stage('fmt check'){
             steps{
                 sh 'cd terraform/aws-network'
