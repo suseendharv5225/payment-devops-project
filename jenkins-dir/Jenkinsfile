@@ -5,7 +5,7 @@ pipeline{
             steps{
                 sh 'pwd'
                 sh 'ls'
-                sh 'find -name "*.tf"' 
+                sh 'find -name "*.tf"'
             }
         }
         stage('terraform version'){
@@ -19,6 +19,19 @@ pipeline{
                 sh 'terraform fmt --check'
                 sh 'terraform init'
                 sh 'terraform validate'
+            }
+        }
+        stage('docker verify'){
+            steps{
+                sh 'docker --version'
+            }
+        }
+        stage('docker build'){
+            steps{
+                sh 'cd'
+                sh 'cd payment-app'
+                sh 'docker build . -t "v111"'
+                sh 'docker images'
             }
         }
     }
