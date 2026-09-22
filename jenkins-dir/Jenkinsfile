@@ -1,11 +1,12 @@
 pipeline{
     agent any
     stages{
-        stage('check-1'){
+        stage('check-2'){
             steps{
                 sh 'echo "hello"'
                 sh 'pwd'
                 sh 'cd'
+                sh 'pwd'
             }
         }
     }
