@@ -32,7 +32,7 @@ pipeline{
                 sh 'cd payment-app'
 		sh 'pwd'
 		sh 'ls'
-                sh 'docker build . -t "v111"'
+                sh 'docker build payment-app/ -t "v111"'
                 sh 'docker images'
             }
         }
