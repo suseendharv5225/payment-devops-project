@@ -59,7 +59,9 @@ pipeline{
             }
         }
         stage('image show'){
+            steps{
             sh 'echo "${aws_account}${ecr_url}:${tag}"'
+            }
         }
     }
 }
