@@ -2,9 +2,9 @@ pipeline{
     agent any
     environment{
         region = 'ap-south-1'
-        ecr-repo = 'payment-service'
-        aws-account = '985151713154'
-        ecr-url = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
+        ecr_repo = 'payment-service'
+        aws_account = '985151713154'
+        ecr_url = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
         tag = "${BUILD_NUMBER}"
     }
     stages{
@@ -43,8 +43,8 @@ pipeline{
         }
         stage('variable pick'){
             steps{
-                sh 'echo "${aws-account}"'
-                sh 'echo "${aws-account}${ecr-url}"'
+                sh 'echo "${aws_account}"'
+                sh 'echo "${aws_account}${ecr-url}"'
             }
         }
     }
