@@ -37,7 +37,7 @@ pipeline{
             steps{
                 sh '''
                 set -e
-                aws ecr get-login-password --region ${region}| docker login --username AWS --password-stdin
+                aws ecr get-login-password --region ${region}| docker login --username AWS --password-stdin ${aws_account}${ecr_url}
                 echo "login successfull"
                 '''
             }
