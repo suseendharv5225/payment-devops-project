@@ -37,15 +37,16 @@ pipeline{
             steps{
                 sh 'cd'
                 sh 'cd payment-app'
-                sh 'docker build payment-app/ -t "985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${tag}"'
+                sh 'docker build payment-app/ -t "${aws_account}/${ecr_url}:${tag}"'
                 sh 'docker images'
+                sh 'docker push "${aws_account}/${ecr_url}:${tag}"'
             }
         }
         stage('variable pick'){
             steps{
                 sh 'echo "${aws_account}"'
                 sh 'echo "${aws_account}${ecr_url}"'
-		sh 'echo "${tag}"'
+                sh 'echo "${tag}"'
             }
         }
     }
