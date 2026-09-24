@@ -75,6 +75,13 @@ pipeline{
                     '''
             }
         }
+        stage('config check'){
+            steps{
+                sh 'kubectl version'
+                sh 'aws --version'
+                sh 'aws eks list-clusters --"$region"'
+            }
+        }
     }
 }
 
