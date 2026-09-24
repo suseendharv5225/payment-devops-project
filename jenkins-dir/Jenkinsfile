@@ -33,15 +33,6 @@ pipeline{
                 sh 'docker --version'
             }
         }
-        stage('docker build'){
-            steps{
-                sh 'cd'
-                sh 'cd payment-app'
-                sh 'docker build payment-app/ -t "${aws_account}${ecr_url}:${tag}"'
-                sh 'docker images'
-                sh 'docker push "${aws_account}${ecr_url}:${tag}"'
-            }
-        }
         stage('docker login'){
             steps{
                 sh '''
@@ -49,6 +40,15 @@ pipeline{
                 aws ecr get-login-password --region ${region}| docker login --username AWS --password-stdin
                 echo "login successfull"
                 '''
+            }
+        }
+        stage('docker build'){
+            steps{
+                sh 'cd'
+                sh 'cd payment-app'
+                sh 'docker build payment-app/ -t "${aws_account}${ecr_url}:${tag}"'
+                sh 'docker images'
+                sh 'docker push "${aws_account}${ecr_url}:${tag}"'
             }
         }
         stage('variable pick'){
