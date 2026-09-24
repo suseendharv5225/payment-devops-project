@@ -1,5 +1,12 @@
 pipeline{
     agent any
+    environment{
+        region ='ap-south-1'
+        ecr-repo ='payment-service'
+        aws-account ='985151713154'
+        ecr-url ='.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
+        tag ="${BUILD_NUMBER}"
+    }
     stages{
         stage('file validation'){
             steps{
@@ -30,10 +37,14 @@ pipeline{
             steps{
                 sh 'cd'
                 sh 'cd payment-app'
-		sh 'pwd'
-		sh 'ls'
-                sh 'docker build payment-app/ -t "v111"'
+                sh 'docker build payment-app/ -t "985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:v111"'
                 sh 'docker images'
+            }
+        }
+        stage('variable pick'){
+            steps{
+                sh 'echo "${aws-account}"'
+                sh 'echo "${aws-account}${ecr-url}"'
             }
         }
     }
