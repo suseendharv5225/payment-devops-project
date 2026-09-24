@@ -37,7 +37,7 @@ pipeline{
             steps{
                 sh 'cd'
                 sh 'cd payment-app'
-                sh 'docker build payment-app/ -t "985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:v111"'
+                sh 'docker build payment-app/ -t "985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${tag}"'
                 sh 'docker images'
             }
         }
