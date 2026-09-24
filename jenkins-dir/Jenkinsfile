@@ -1,11 +1,11 @@
 pipeline{
     agent any
     environment{
-        region ='ap-south-1'
-        ecr-repo ='payment-service'
-        aws-account ='985151713154'
-        ecr-url ='.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
-        tag ="${BUILD_NUMBER}"
+        region = 'ap-south-1'
+        ecr-repo = 'payment-service'
+        aws-account = '985151713154'
+        ecr-url = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
+        tag = "${BUILD_NUMBER}"
     }
     stages{
         stage('file validation'){
