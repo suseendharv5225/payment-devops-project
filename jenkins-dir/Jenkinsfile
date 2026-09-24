@@ -45,6 +45,7 @@ pipeline{
             steps{
                 sh 'echo "${aws_account}"'
                 sh 'echo "${aws_account}${ecr_url}"'
+		sh 'echo "${tag}"'
             }
         }
     }
