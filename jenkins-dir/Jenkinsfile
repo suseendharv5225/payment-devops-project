@@ -65,14 +65,14 @@ pipeline{
         }
         stage('file check'){
             steps{
-                script{
-                    if [-f "payment-helm/templates/configmap.yaml"] && [-f "payment-helm/templates/deployment.yaml"] && [-f "payment-helm/templates/service.yaml"]{
+                sh '''
+                    if [-f "payment-helm/templates/configmap.yaml"] && [-f "payment-helm/templates/deployment.yaml"] && [-f "payment-helm/templates/service.yaml"]; then
                         echo "file exists"
-                    }
-                    else{
+                    else 
                         echo "Dockerfile not found"
                         exit 1
-                    }
+                    fi
+                    '''
                 }
             }
         }
