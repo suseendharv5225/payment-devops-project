@@ -44,7 +44,7 @@ pipeline{
         stage('variable pick'){
             steps{
                 sh 'echo "${aws_account}"'
-                sh 'echo "${aws_account}${ecr-url}"'
+                sh 'echo "${aws_account}${ecr_url}"'
             }
         }
     }
