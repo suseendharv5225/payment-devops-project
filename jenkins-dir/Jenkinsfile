@@ -63,5 +63,18 @@ pipeline{
             sh 'echo "${aws_account}${ecr_url}:${tag}"'
             }
         }
+        stage('file check'){
+            steps{
+                script{
+                    if [-f "payment-helm/templates/configmap.yaml"] && [-f "payment-helm/templates/deployment.yaml"] && [-f "payment-helm/templates/service.yaml"]{
+                        echo "file exists"
+                    }
+                    else{
+                        echo "Dockerfile not found"
+                        exit 1
+                    }
+                }
+            }
+        }
     }
 }
