@@ -5,6 +5,7 @@ pipeline{
         ecr_repo = 'payment-service'
         aws_account = '985151713154'
         ecr_url = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
+        old_tag = '42'
         tag = "${BUILD_NUMBER}"
     }
     stages{
@@ -79,7 +80,14 @@ pipeline{
             steps{
                 sh 'kubectl version'
                 sh 'aws --version'
-                sh 'aws eks list-clusters --"$region"'
+                sh 'aws eks list-clusters --region "$region"'
+            }
+        }
+        stage('deploy'){
+            steps{
+                sh 'aws eks update-kubeconfig --region "${region}" --name production-eks'
+                sh 'kubectl get pods'
+                sh 'kubectl get nodes'
             }
         }
     }
