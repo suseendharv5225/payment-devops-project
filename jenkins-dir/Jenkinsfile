@@ -101,7 +101,7 @@ pipeline{
         }
         stage('push'){
             steps{
-                sh 'git add .'
+                sh 'git add payment-helm/values.yaml'
                 sh 'git commit -m "new build"'
                 sh 'git push origin main'
             }
