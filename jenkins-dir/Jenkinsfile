@@ -92,7 +92,7 @@ pipeline{
         }
         stage('deploy'){
             steps{
-                sh 'sed -i -E "s|^[[:space:]]*tag:.*|  tag: \\"${BUILD_NUMBER}\\"|" payment-helm/values.yaml'
+                sh 'sed -i -E "s|^[[:space:]]*tag:.*|  tag: \\${BUILD_NUMBER}\\|" payment-helm/values.yaml'
                 sh 'cat payment-helm/values.yaml'
             }
         }
