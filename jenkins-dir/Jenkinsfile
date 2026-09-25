@@ -94,7 +94,7 @@ pipeline{
             steps{
                 sh 'sed -i -E "s|^[[:space:]]*tag:.*|  tag: \\"${BUILD_NUMBER}\\"|" payment-helm/values.yaml'
                 sh 'cat payment-helm/values.yaml'
-                sh 'helm upgrade payment-service payment-helm/ -n payment-app'
+                sh 'helm upgrade payment-service payment-helm/ -n payment-app --wait --timeout=5m'
                 sh 'helm list -n payment-app'
                 sh 'kubectl get pods -n payment-app'
             }
