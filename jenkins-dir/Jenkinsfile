@@ -83,7 +83,7 @@ pipeline{
                 sh 'aws eks list-clusters --region "$region"'
             }
         }
-        stage('deploy'){
+        stage('deploy-check'){
             steps{
                 sh 'aws eks update-kubeconfig --region "${region}" --name production-eks'
                 sh 'kubectl get pods'
