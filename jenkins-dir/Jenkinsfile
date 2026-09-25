@@ -100,9 +100,11 @@ pipeline{
             }
         }
         stage('push'){
-            sh 'git add .'
-            sh 'git commit -m "new build"'
-            sh 'git push origin main'
+            steps{
+                sh 'git add .'
+                sh 'git commit -m "new build"'
+                sh 'git push origin main'
+            }
         }
     }
 }
