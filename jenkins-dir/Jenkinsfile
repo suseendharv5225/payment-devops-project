@@ -101,6 +101,8 @@ pipeline{
         }
         stage('push'){
             steps{
+                sh 'git fetch origin main'
+                sh 'git checkout -B main origin/main'
                 sh 'git add payment-helm/values.yaml'
                 sh 'git commit -m "new build"'
                 sh 'git push origin main'
