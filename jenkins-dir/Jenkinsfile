@@ -90,6 +90,12 @@ pipeline{
                 sh 'kubectl get nodes'
             }
         }
+        stage('deploy'){
+            steps{
+                sh 'sed -i -E "s|^([[:space:]]*tag:).*|\1 \"${BUILD_NUMBER}\"|" payment-helm/values.yaml'
+                sh 'cat payment-helm/values.yaml'
+            }
+        }
     }
 }
 
