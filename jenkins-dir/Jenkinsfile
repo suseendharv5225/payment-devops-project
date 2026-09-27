@@ -78,12 +78,13 @@ pipeline{
         }
         stage('Git Push') {
     steps {
-        withCredentials([usernamePassword(
-            credentialsId: 'Git-creds',
-            usernameVariable: 'suseendharv5225',
-            passwordVariable: 'jenkins'
-        )]) {
-
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'Git-creds',
+                usernameVariable: 'GIT_USERNAME',
+                passwordVariable: 'GIT_TOKEN'
+            )
+        ]) {
             sh '''
                 set -e
 
@@ -97,6 +98,6 @@ pipeline{
             '''
         }
     }
-        }
+}
     }
 }
