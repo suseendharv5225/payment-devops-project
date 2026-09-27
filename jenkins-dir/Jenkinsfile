@@ -101,7 +101,7 @@ pipeline{
         }
         stage('apply change'){
             steps{
-                sh 'helm upgrade payment-service payment-helm/ n payment-app'
+                sh 'helm upgrade payment-service payment-helm/ -n payment-app'
             }
         }
     }
