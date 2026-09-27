@@ -16,28 +16,6 @@ pipeline{
                 sh 'find -name "*.tf"'
             }
         }
-        stage('Git Push') {
-    steps {
-        withCredentials([usernamePassword(
-            credentialsId: 'Git-creds',
-            usernameVariable: 'suseendharv5225',
-            passwordVariable: 'jenkins'
-        )]) {
-
-            sh '''
-                set -e
-
-                git config user.name "suseendharv5225"
-                git config user.email "suseendharv5225@gmail.com"
-
-                git add .
-                git commit -m "Update image tag - ${BUILD_NUMBER}" || true
-
-                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-gitops.git HEAD:main
-            '''
-        }
-    }
-        }
         stage('terraform version'){
             steps{
                 sh 'terraform version'
@@ -97,6 +75,28 @@ pipeline{
                     fi
                     '''
             }
+        }
+        stage('Git Push') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'Git-creds',
+            usernameVariable: 'suseendharv5225',
+            passwordVariable: 'jenkins'
+        )]) {
+
+            sh '''
+                set -e
+
+                git config user.name "suseendharv5225"
+                git config user.email "suseendharv5225@gmail.com"
+
+                git add .
+                git commit -m "Update image tag - ${BUILD_NUMBER}" || true
+
+                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-gitops.git HEAD:main
+            '''
+        }
+    }
         }
     }
 }
