@@ -62,7 +62,6 @@ pipeline{
         stage('image show'){
             steps{
             sh 'echo "${aws_account}${ecr_url}:${tag}"'
-	    sh 'sed -i "s/tag: .*/tag: \"${BUILD_NUMBER}\"/" payment-helm/values.yaml'
             }
         }
         stage('file check'){
@@ -99,6 +98,11 @@ pipeline{
             '''
         }
     }
-}
+        }
+        stage('apply change'){
+            steps{
+                sh 'helm upgrade payment-service payment-helm/ n payment-app'
+            }
+        }
     }
 }
