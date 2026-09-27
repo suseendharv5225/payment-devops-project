@@ -6,7 +6,7 @@ image:
 
   repository: 985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service
 
-  tag: 65
+  tag: 66
 
   pullPolicy: IfNotPresent
 
