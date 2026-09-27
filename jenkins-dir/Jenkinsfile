@@ -21,7 +21,7 @@ pipeline{
         withCredentials([usernamePassword(
             credentialsId: 'Git-creds',
             usernameVariable: 'suseendharv5225',
-            passwordVariable: 'Git-creds'
+            passwordVariable: 'jenkins'
         )]) {
 
             sh '''
