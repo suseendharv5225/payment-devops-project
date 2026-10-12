@@ -92,18 +92,13 @@ pipeline{
                 git config user.name "suseendharv5225"
                 git config user.email "suseendharv5225@gmail.com"
 
-                git add .
+                git add /payment-helm
                 git commit -m "Update image tag - ${BUILD_NUMBER}" || true
 
-                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-devops-project.git HEAD:main
+                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-manifests.git HEAD:main
             '''
         }
     }
-        }
-        stage('apply change'){
-            steps{
-                sh 'helm upgrade payment-service payment-helm/ -n payment-app'
-            }
         }
     }
 }
