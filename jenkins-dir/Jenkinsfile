@@ -92,7 +92,7 @@ pipeline{
                 git config user.name "suseendharv5225"
                 git config user.email "suseendharv5225@gmail.com"
 
-                git add /payment-helm
+                git add payment-helm
                 git commit -m "Update image tag - ${BUILD_NUMBER}" || true
 
                 git git@github.com:suseendharv5225/payment-manifests.git HEAD:main
