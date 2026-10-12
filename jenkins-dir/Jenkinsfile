@@ -95,7 +95,7 @@ pipeline{
                 git add /payment-helm
                 git commit -m "Update image tag - ${BUILD_NUMBER}" || true
 
-                git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-manifests.git HEAD:main
+                git git@github.com:suseendharv5225/payment-manifests.git HEAD:main
             '''
         }
     }
