@@ -1,104 +1,145 @@
-pipeline{
+
+pipeline {
     agent any
-    environment{
-        region = 'ap-south-1'
-        ecr_repo = 'payment-service'
+
+    environment {
+        region      = 'ap-south-1'
+        ecr_repo    = 'payment-service'
         aws_account = '985151713154'
-        ecr_url = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
-        old_tag = '42'
-        tag = "${BUILD_NUMBER}"
+        ecr_url     = '.dkr.ecr.ap-south-1.amazonaws.com/payment-service'
+        tag         = "${BUILD_NUMBER}"
+        ECR_IMAGE   = "${aws_account}${ecr_url}"
     }
-    stages{
-        stage('file validation'){
-            steps{
-                sh 'pwd'
-                sh 'ls'
-                sh 'find -name "*.tf"'
-            }
-        }
-        stage('terraform version'){
-            steps{
-                sh 'terraform version'
-            }
-        }
-        stage('fmt check'){
-            steps{
-                sh 'cd terraform/aws-network'
-                sh 'terraform fmt --check'
-                sh 'terraform init'
-                sh 'terraform validate'
-            }
-        }
-        stage('docker verify'){
-            steps{
-                sh 'docker --version'
-            }
-        }
-        stage('docker login'){
-            steps{
+
+    stages {
+        stage('File Validation') {
+            steps {
                 sh '''
-                set -e
-                aws ecr get-login-password --region ${region}| docker login --username AWS --password-stdin ${aws_account}${ecr_url}
-                echo "login successfull"
+                    pwd
+                    ls -la
+                    find . -name "*.tf"
                 '''
             }
         }
-        stage('docker build'){
-            steps{
-                sh 'cd'
-                sh 'cd payment-app'
-                sh 'docker build payment-app/ -t "${aws_account}${ecr_url}:${tag}"'
-                sh 'docker images'
-                sh 'docker push "${aws_account}${ecr_url}:${tag}"'
+
+        stage('Terraform Version') {
+            steps {
+                sh 'terraform version'
             }
         }
-        stage('variable pick'){
-            steps{
-                sh 'echo "${aws_account}"'
-                sh 'echo "${aws_account}${ecr_url}"'
-                sh 'echo "${tag}"'
-            }
-        }
-        stage('image show'){
-            steps{
-            sh 'echo "${aws_account}${ecr_url}:${tag}"'
-            sh 'sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" payment-helm/values.yaml'
-            }
-        }
-        stage('file check'){
-            steps{
-                sh '''
-                    if [ -f "payment-helm/templates/configmap.yaml" ] && [ -f "payment-helm/templates/deployment.yaml" ] && [ -f "payment-helm/templates/service.yaml" ]; then
-                        echo "file exists"
-                    else 
-                        echo "Dockerfile not found"
-                        exit 1
-                    fi
+
+        stage('Terraform Validation') {
+            steps {
+                dir('terraform/aws-network') {
+                    sh '''
+                        set -e
+                        terraform fmt -check
+                        terraform init -input=false
+                        terraform validate
                     '''
+                }
             }
         }
-        stage('Git Push') {
-    steps {
-        withCredentials([
-            usernamePassword(
-                credentialsId: 'Git-creds',
-                usernameVariable: 'GIT_USERNAME',
-                passwordVariable: 'GIT_TOKEN'
-            )
-        ]) {
-            sh '''
-                set -e
 
-                git config user.name "suseendharv5225"
-                git config user.email "suseendharv5225@gmail.com"
-
-                git add payment-helm
-                git commit -m "Update image tag - ${BUILD_NUMBER}" || true
-
-                git push git@github.com:suseendharv5225/payment-manifests.git HEAD:main
-            '''
+        stage('Docker Verify') {
+            steps {
+                sh 'docker --version'
+            }
         }
-    }
+
+        stage('Docker Login') {
+            steps {
+                sh '''
+                    set -e
+                    aws ecr get-login-password --region "$region" |
+                    docker login --username AWS --password-stdin \
+                        "${aws_account}${ecr_url}"
+                    echo "Login successful"
+                '''
+            }
+        }
+
+        stage('Docker Build and Push') {
+            steps {
+                dir('payment-app') {
+                    sh '''
+                        set -e
+                        docker build -t "${ECR_IMAGE}:${tag}" .
+                        docker images
+                        docker push "${ECR_IMAGE}:${tag}"
+                    '''
+                }
+            }
+        }
+
+        stage('Update Helm Image Tag') {
+            steps {
+                sh '''
+                    set -e
+                    echo "Image: ${ECR_IMAGE}:${tag}"
+
+                    sed -i -E \
+                      "s|^([[:space:]]*tag:).*|\\1 \\"${tag}\\"|" \
+                      payment-helm/values.yaml
+
+                    grep -n 'tag:' payment-helm/values.yaml
+                '''
+            }
+        }
+
+        stage('Helm File Check') {
+            steps {
+                sh '''
+                    set -e
+
+                    for file in \
+                        payment-helm/templates/configmap.yaml \
+                        payment-helm/templates/deployment.yaml \
+                        payment-helm/templates/service.yaml
+                    do
+                        if [ ! -f "$file" ]; then
+                            echo "Required file not found: $file"
+                            exit 1
+                        fi
+                    done
+
+                    echo "All required Helm files exist"
+                '''
+            }
+        }
+
+        stage('Git Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'Git-creds',
+                        usernameVariable: 'GIT_USERNAME',
+                        passwordVariable: 'GIT_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        set -e
+
+                        git config user.name "suseendharv5225"
+                        git config user.email "suseendharv5225@gmail.com"
+
+                        git add payment-helm
+
+                        if ! git diff --cached --quiet; then
+                            git commit -m "Update image tag - ${BUILD_NUMBER}"
+                        else
+                            echo "No manifest changes to commit"
+                            exit 0
+                        fi
+
+                        git fetch https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-manifests.git main
+
+                        git rebase FETCH_HEAD
+
+                        git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/suseendharv5225/payment-manifests.git HEAD:main
+                    '''
+                }
+            }
         }
     }
 }
