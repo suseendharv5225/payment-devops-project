@@ -116,22 +116,19 @@ pipeline{
             git config --global user.name "suseendharv5225"
             git config --global user.email "suseendharv5225@gmail.com"
 
-            # Clone the manifest repository
-            git clone git@github.com:suseendharv5225/payment-manifests.git payment-manifest
+            MANIFEST_DIR="payment-manifest-${BUILD_NUMBER}"
 
-            # Update the image tag in the manifest repository
-            cd payment-manifest
+            git clone git@github.com:suseendharv5225/payment-manifests.git "$MANIFEST_DIR"
+
+            cd "$MANIFEST_DIR"
+
+            git checkout main
+            git pull --rebase origin main
+
             sed -i -E "s|^[[:space:]]*tag:.*|  tag: \\"${BUILD_NUMBER}\\"|" values.yaml
 
-            # Fetch latest changes
-            git fetch origin main
-            git checkout -B main origin/main
-
-            # Commit the updated image tag
             git add values.yaml
-            git commit -m "Update image tag - ${BUILD_NUMBER}" || true
-
-            # Push the update
+            git commit -m "Update image tag - ${BUILD_NUMBER}"
             git push origin main
         '''
         }
