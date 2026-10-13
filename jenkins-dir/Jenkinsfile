@@ -114,7 +114,8 @@ pipeline{
                 set -e
                 git config user.name "suseendharv5225"
                 git config user.email "suseendharv5225@gmail.com"
-                git clone git@github.com:suseendharv5225/payment-manifests.git payment-
+                git clone git@github.com:suseendharv5225/payment-manifests.git payment-manifest
+                rm -r payment-
                 ls
                 sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" payment-manifest/values.yaml
                 git add payment-helm/values.yaml
