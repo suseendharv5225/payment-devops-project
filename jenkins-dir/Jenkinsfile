@@ -134,24 +134,31 @@ pipeline{
         }
             }
         }
-        stage('Deployment Health Check') {
+        stage('Verify Image Tag') {
     steps {
         script {
-            def status = sh(
-                script: 'kubectl rollout status deployment/payment-service -n payment-app --timeout=120s',
-                returnStatus: true
-            )
+            sh '''
+                set -e
 
-            if (status != 0) {
-                echo 'Deployment failed! Rolling back to the previous revision.'
+                EXPECTED_IMAGE="985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${BUILD_NUMBER}"
 
-                sh 'kubectl rollout undo deployment/payment-service -n payment-app'
-                sh 'kubectl rollout status deployment/payment-service -n payment-app --timeout=120s'
+                ACTUAL_IMAGE=$(kubectl get deployment payment-service \
+                  -n payment-app \
+                  -o jsonpath='{.spec.template.spec.containers[0].image}')
 
-                error('Deployment failed. Rollback was triggered.')
-            } else {
-                echo 'Deployment is healthy.'
-            }
+                echo "Expected image: ${EXPECTED_IMAGE}"
+                echo "Actual image:   ${ACTUAL_IMAGE}"
+
+                if [ "$ACTUAL_IMAGE" != "$EXPECTED_IMAGE" ]; then
+                    echo "ERROR: Image tag was not updated!"
+                    exit 1
+                fi
+
+                kubectl rollout status deployment/payment-service \
+                  -n payment-app --timeout=120s
+
+                echo "Image tag verified successfully."
+            '''
         }
     }
 }
