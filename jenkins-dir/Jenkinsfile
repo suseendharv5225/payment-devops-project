@@ -91,14 +91,14 @@ pipeline{
 
                 git config user.name "suseendharv5225"
                 git config user.email "suseendharv5225@gmail.com"
-                git clone git@github.com:suseendharv5225/payment-manifests.git
+                git clone git@github.com:suseendharv5225/payment-devops-project.git
                 git add payment-helm
                 git commit -m "Update image tag - ${BUILD_NUMBER}" || true
 
-                git push git@github.com:suseendharv5225/payment-manifests.git HEAD:main
+                git push git@github.com:suseendharv5225/payment-devops-project HEAD:main
             '''
         }
-    }
+            }
         }
     }
 }
