@@ -114,10 +114,10 @@ pipeline{
                 set -e
                 git config user.name "suseendharv5225"
                 git config user.email "suseendharv5225@gmail.com"
-                git clone git@github.com:suseendharv5225/payment-manifests.git payment-helm
+                git clone git@github.com:suseendharv5225/payment-manifests.git payment-
                 ls
-                sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" payment-helm/values.yaml
-                git add payment-helm
+                sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" payment-manifest/values.yaml
+                git add payment-helm/values.yaml
                 git commit -m "Update image tag - ${BUILD_NUMBER}" || true
 
                 git push git@github.com:suseendharv5225/payment-manifests HEAD:main
