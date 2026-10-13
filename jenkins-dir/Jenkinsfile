@@ -134,5 +134,26 @@ pipeline{
         }
             }
         }
+        stage('Deployment Health Check') {
+    steps {
+        script {
+            def status = sh(
+                script: 'kubectl rollout status deployment/payment-service -n payment-app --timeout=120s',
+                returnStatus: true
+            )
+
+            if (status != 0) {
+                echo 'Deployment failed! Rolling back to the previous revision.'
+
+                sh 'kubectl rollout undo deployment/payment-service -n payment-app'
+                sh 'kubectl rollout status deployment/payment-service -n payment-app --timeout=120s'
+
+                error('Deployment failed. Rollback was triggered.')
+            } else {
+                echo 'Deployment is healthy.'
+            }
+        }
+    }
+}
     }
 }
