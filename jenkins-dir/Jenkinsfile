@@ -100,5 +100,29 @@ pipeline{
         }
             }
         }
+        stage('manifest Push') {
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'Git-creds',
+                usernameVariable: 'GIT_USERNAME',
+                passwordVariable: 'GIT_TOKEN'
+            )
+        ]) {
+            sh '''
+                set -e
+                git config user.name "suseendharv5225"
+                git config user.email "suseendharv5225@gmail.com"
+                git clone git@github.com:suseendharv5225/payment-manifests.git payment-helm
+                ls
+                sed -i "s/tag: .*/tag: \\"${BUILD_NUMBER}\\"/" payment-helm/values.yaml
+                git add payment-helm
+                git commit -m "Update image tag - ${BUILD_NUMBER}" || true
+
+                git push git@github.com:suseendharv5225/payment-manifests HEAD:main
+            '''
+        }
+            }
+        }
     }
 }
