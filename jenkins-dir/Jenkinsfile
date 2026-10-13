@@ -136,30 +136,33 @@ pipeline{
         }
         stage('Verify Image Tag') {
     steps {
-        script {
-            sh '''
-                set -e
+        sh '''
+            set -e
 
-                EXPECTED_IMAGE="985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${BUILD_NUMBER}"
+            EXPECTED_IMAGE="985151713154.dkr.ecr.ap-south-1.amazonaws.com/payment-service:${BUILD_NUMBER}"
 
+            echo "Waiting up to 3 minutes for Argo CD to deploy: ${EXPECTED_IMAGE}"
+
+            for i in $(seq 1 18); do
                 ACTUAL_IMAGE=$(kubectl get deployment payment-service \
-                  -n payment-app \
-                  -o jsonpath='{.spec.template.spec.containers[0].image}')
+                    -n payment-app \
+                    -o jsonpath='{.spec.template.spec.containers[0].image}')
 
-                echo "Expected image: ${EXPECTED_IMAGE}"
-                echo "Actual image:   ${ACTUAL_IMAGE}"
+                echo "Attempt $i: Current image = ${ACTUAL_IMAGE}"
 
-                if [ "$ACTUAL_IMAGE" != "$EXPECTED_IMAGE" ]; then
-                    echo "ERROR: Image tag was not updated!"
-                    exit 1
+                if [ "$ACTUAL_IMAGE" = "$EXPECTED_IMAGE" ]; then
+                    kubectl rollout status deployment/payment-service \
+                        -n payment-app --timeout=120s
+                    echo "Image tag verified successfully."
+                    exit 0
                 fi
 
-                kubectl rollout status deployment/payment-service \
-                  -n payment-app --timeout=120s
+                sleep 10
+            done
 
-                echo "Image tag verified successfully."
-            '''
-        }
+            echo "ERROR: Expected image was not deployed within 3 minutes."
+            exit 1
+        '''
     }
 }
     }
