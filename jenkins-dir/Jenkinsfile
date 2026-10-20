@@ -40,6 +40,17 @@ stage('SonarQube Analysis') {
         script {
             def scannerHome = tool 'sonar-scanner'
 
+            sh '''
+                echo "Current workspace:"
+                pwd
+
+                echo "Workspace contents:"
+                ls -la
+
+                echo "Payment app contents:"
+                ls -la payment-app
+            '''
+
             withSonarQubeEnv('sonarqube-server') {
                 sh """
                     ${scannerHome}/bin/sonar-scanner \
