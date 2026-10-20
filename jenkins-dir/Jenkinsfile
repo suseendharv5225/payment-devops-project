@@ -34,6 +34,23 @@ pipeline{
                 sh 'docker --version'
             }
         }
+        
+stage('SonarQube Analysis') {
+    steps {
+        script {
+            def scannerHome = tool 'sonar-scanner'
+
+            withSonarQubeEnv('sonarqube-server') {
+                sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                      -Dsonar.projectKey=payment-service \
+                      -Dsonar.projectName=payment-service \
+                      -Dsonar.sources=payment-app
+                """
+            }
+        }
+    }
+}
         stage('docker login'){
             steps{
                 sh '''
