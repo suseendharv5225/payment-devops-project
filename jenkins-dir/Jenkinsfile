@@ -35,29 +35,21 @@ pipeline{
             }
         }
         
-
-
 stage('SonarQube Analysis') {
     steps {
         script {
-            echo 'Checking scanner installation'
-
             def scannerHome = tool 'sonar-scanner'
-            echo "Scanner path: ${scannerHome}"
-
-            sh """
-                set -eux
-                ${scannerHome}/bin/sonar-scanner --version
-            """
 
             withSonarQubeEnv('sonarqube-server') {
-                sh '''
-                    set -eux
-                    echo "SonarQube URL: $SONAR_HOST_URL"
-                    curl -sS -o /dev/null \
-                      -w "HTTP status: %{http_code}\\n" \
-                      "$SONAR_HOST_URL/api/system/status"
-                '''
+                sh """
+                    set -e
+                    echo "Starting SonarQube analysis"
+                    ${scannerHome}/bin/sonar-scanner \
+                      -Dsonar.projectKey=payment-service \
+                      -Dsonar.projectName=payment-service \
+                      -Dsonar.sources=payment-app \
+                      -Dsonar.sourceEncoding=UTF-8
+                """
             }
         }
     }
