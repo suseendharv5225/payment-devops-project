@@ -135,6 +135,21 @@ stage('SonarQube Analysis') {
         }
             }
         }
+        stage('Trivy Filesystem Scan') {
+    steps {
+        dir('payment-app') {
+            sh '''
+                set -e
+
+                trivy --config "" fs \
+                    --scanners vuln,misconfig,secret \
+                    --severity HIGH,CRITICAL \
+                    --exit-code 1 \
+                    .
+            '''
+        }
+    }
+}
         stage('manifest Push') {
     steps {
         withCredentials([
